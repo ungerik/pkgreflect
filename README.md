@@ -12,4 +12,7 @@ This file contains the follwing maps of exported names to reflection types/value
 Command line usage:
 
 	pkgreflect --help
-	pkgreflect [-notypes][-nofuncs][-novars][-unexported][-gofile=filename.go] [DIR_NAME]
+	pkgreflect [-notypes][-nofuncs][-novars][-unexported][-norecurs][-gofile=filename.go] [DIR_NAME]
+	
+If -norecurs is not set, then pkgreflect traverses recursively into sub-directories.
+If no DIR_NAME is given, then the current directory is used as root.	
