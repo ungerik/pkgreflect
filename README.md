@@ -12,4 +12,5 @@ This preprocessor generates a file called _pkg_reflect.go in every parsed packag
 
 Command line usage:
 
+	pkgreflect --help
 	pkgreflect [-notypes][-nofuncs][-novars][-unexported][-gofile=filename.go] [DIR_NAME]

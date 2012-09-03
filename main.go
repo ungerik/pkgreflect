@@ -106,7 +106,7 @@ func main() {
 	flag.BoolVar(&nofuncs, "nofuncs", false, "Don't list package functions")
 	flag.BoolVar(&novars, "novars", false, "Don't list package variables")
 	flag.BoolVar(&unexported, "unexported", false, "Also list unexported names")
-	flag.StringVar(&gofile, "gofile", "_pkg_reflect.go", "Name of the generated .go file")
+	flag.StringVar(&gofile, "gofile", "pkgreflect.go", "Name of the generated .go file")
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
