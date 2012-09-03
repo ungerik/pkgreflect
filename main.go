@@ -82,13 +82,15 @@ func parseDir(dir string) {
 		}
 	}
 
-	dirs, err := dirFile.Readdir(-1)
-	if err != nil {
-		panic(err)
-	}
-	for _, info := range dirs {
-		if info.IsDir() {
-			parseDir(path.Join(dir, info.Name()))
+	if !norecurs {
+		dirs, err := dirFile.Readdir(-1)
+		if err != nil {
+			panic(err)
+		}
+		for _, info := range dirs {
+			if info.IsDir() {
+				parseDir(path.Join(dir, info.Name()))
+			}
 		}
 	}
 }
@@ -98,6 +100,7 @@ var (
 	nofuncs    bool
 	novars     bool
 	unexported bool
+	norecurs   bool
 	gofile     string
 )
 
@@ -106,6 +109,7 @@ func main() {
 	flag.BoolVar(&nofuncs, "nofuncs", false, "Don't list package functions")
 	flag.BoolVar(&novars, "novars", false, "Don't list package variables")
 	flag.BoolVar(&unexported, "unexported", false, "Also list unexported names")
+	flag.BoolVar(&norecurs, "norecurs", false, "Don't parse sub-directories resursively")
 	flag.StringVar(&gofile, "gofile", "pkgreflect.go", "Name of the generated .go file")
 	flag.Parse()
 
