@@ -29,6 +29,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"sort"
 	"strings"
 )
 
@@ -38,6 +39,7 @@ var (
 	novars     bool
 	unexported bool
 	norecurs   bool
+	stdout     bool
 	gofile     string
 )
 
@@ -48,6 +50,7 @@ func main() {
 	flag.BoolVar(&unexported, "unexported", false, "Also list unexported names")
 	flag.BoolVar(&norecurs, "norecurs", false, "Don't parse sub-directories resursively")
 	flag.StringVar(&gofile, "gofile", "pkgreflect.go", "Name of the generated .go file")
+	flag.BoolVar(&stdout, "stdout", false, "Write to stdout.")
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
@@ -110,13 +113,17 @@ func parseDir(dir string) {
 			fmt.Fprintln(&buf, "")
 		}
 
-		filename := path.Join(dir, gofile)
-		newFileData := buf.Bytes()
-		oldFileData, _ := ioutil.ReadFile(filename)
-		if !bytes.Equal(newFileData, oldFileData) {
-			err = ioutil.WriteFile(filename, newFileData, 0660)
-			if err != nil {
-				panic(err)
+		if stdout {
+			io.Copy(os.Stdout, &buf)
+		} else {
+			filename := path.Join(dir, gofile)
+			newFileData := buf.Bytes()
+			oldFileData, _ := ioutil.ReadFile(filename)
+			if !bytes.Equal(newFileData, oldFileData) {
+				err = ioutil.WriteFile(filename, newFileData, 0660)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
@@ -135,12 +142,17 @@ func parseDir(dir string) {
 }
 
 func print(w io.Writer, pkg *ast.Package, kind ast.ObjKind, format string) {
+	names := []string{}
 	for _, f := range pkg.Files {
 		for name, object := range f.Scope.Objects {
 			if object.Kind == kind && (unexported || ast.IsExported(name)) {
-				fmt.Fprintf(w, format, name, name)
+				names = append(names, name)
 			}
 		}
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		fmt.Fprintf(w, format, name, name)
 	}
 }
 
