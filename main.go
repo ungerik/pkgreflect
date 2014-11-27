@@ -37,6 +37,7 @@ var (
 	notypes    bool
 	nofuncs    bool
 	novars     bool
+	noconsts   bool
 	unexported bool
 	norecurs   bool
 	stdout     bool
@@ -47,6 +48,7 @@ func main() {
 	flag.BoolVar(&notypes, "notypes", false, "Don't list package types")
 	flag.BoolVar(&nofuncs, "nofuncs", false, "Don't list package functions")
 	flag.BoolVar(&novars, "novars", false, "Don't list package variables")
+	flag.BoolVar(&noconsts, "noconsts", false, "Don't list package consts")
 	flag.BoolVar(&unexported, "unexported", false, "Also list unexported names")
 	flag.BoolVar(&norecurs, "norecurs", false, "Don't parse sub-directories resursively")
 	flag.StringVar(&gofile, "gofile", "pkgreflect.go", "Name of the generated .go file")
@@ -109,6 +111,14 @@ func parseDir(dir string) {
 			// Addresses of variables
 			fmt.Fprintln(&buf, "var Variables = map[string]reflect.Value{")
 			print(&buf, pkg, ast.Var, "\t\"%s\": reflect.ValueOf(&%s),\n")
+			fmt.Fprintln(&buf, "}")
+			fmt.Fprintln(&buf, "")
+		}
+
+		if !noconsts {
+			// Addresses of consts
+			fmt.Fprintln(&buf, "var Consts = map[string]reflect.Value{")
+			print(&buf, pkg, ast.Con, "\t\"%s\": reflect.ValueOf(%s),\n")
 			fmt.Fprintln(&buf, "}")
 			fmt.Fprintln(&buf, "")
 		}
