@@ -7,12 +7,13 @@ This file contains the following maps of exported names to reflection types/valu
 
 	var Types = map[string]reflect.Type{ ... }
 	var Functions = map[string]reflect.Value{ ... }
-	var Variables = map[string]reflect.Value{ ... }
+  var Variables = map[string]reflect.Value{ ... }
+  var Consts = map[string]reflect.Value{ ... }
 
 Command line usage:
 
 	pkgreflect --help
-	pkgreflect [-notypes][-nofuncs][-novars][-unexported][-norecurs][-gofile=filename.go] [DIR_NAME]
-	
+	pkgreflect [-notypes][-nofuncs][-novars][-noconsts][-unexported][-norecurs][-gofile=filename.go] [DIR_NAME]
+
 If -norecurs is not set, then pkgreflect traverses recursively into sub-directories.
-If no DIR_NAME is given, then the current directory is used as root.	
+If no DIR_NAME is given, then the current directory is used as root.
