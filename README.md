@@ -7,8 +7,8 @@ This file contains the following maps of exported names to reflection types/valu
 
 	var Types = map[string]reflect.Type{ ... }
 	var Functions = map[string]reflect.Value{ ... }
-  var Variables = map[string]reflect.Value{ ... }
-  var Consts = map[string]reflect.Value{ ... }
+	var Variables = map[string]reflect.Value{ ... }
+	var Consts = map[string]reflect.Value{ ... }
 
 Command line usage:
 
