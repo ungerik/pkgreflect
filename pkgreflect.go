@@ -28,7 +28,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -126,7 +126,7 @@ func parseDir(dir string) {
 		if stdout {
 			io.Copy(os.Stdout, &buf)
 		} else {
-			filename := path.Join(dir, gofile)
+			filename := filepath.Join(dir, gofile)
 			newFileData := buf.Bytes()
 			oldFileData, _ := ioutil.ReadFile(filename)
 			if !bytes.Equal(newFileData, oldFileData) {
@@ -145,7 +145,7 @@ func parseDir(dir string) {
 		}
 		for _, info := range dirs {
 			if info.IsDir() {
-				parseDir(path.Join(dir, info.Name()))
+				parseDir(filepath.Join(dir, info.Name()))
 			}
 		}
 	}
@@ -168,5 +168,5 @@ func print(w io.Writer, pkg *ast.Package, kind ast.ObjKind, format string) {
 
 func filter(info os.FileInfo) bool {
 	name := info.Name()
-	return !info.IsDir() && name != gofile && path.Ext(name) == ".go" && !strings.HasSuffix(name, "_test.go")
+	return !info.IsDir() && name != gofile && filepath.Ext(name) == ".go" && !strings.HasSuffix(name, "_test.go")
 }
