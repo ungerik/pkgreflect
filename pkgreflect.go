@@ -42,6 +42,7 @@ var (
 	norecurs   bool
 	stdout     bool
 	gofile     string
+	notests    bool
 )
 
 func main() {
@@ -53,6 +54,7 @@ func main() {
 	flag.BoolVar(&norecurs, "norecurs", false, "Don't parse sub-directories resursively")
 	flag.StringVar(&gofile, "gofile", "pkgreflect.go", "Name of the generated .go file")
 	flag.BoolVar(&stdout, "stdout", false, "Write to stdout.")
+	flag.BoolVar(&notests, "notests", false, "Don't list test related code")
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
@@ -167,6 +169,25 @@ func print(w io.Writer, pkg *ast.Package, kind ast.ObjKind, format string) {
 }
 
 func filter(info os.FileInfo) bool {
+
 	name := info.Name()
-	return !info.IsDir() && name != gofile && filepath.Ext(name) == ".go" && !strings.HasSuffix(name, "_test.go")
+
+	if info.IsDir() {
+		return false
+	}
+
+	if name == gofile {
+		return false
+	}
+
+	if filepath.Ext(name) != ".go" {
+		return  false
+	}
+	
+	if strings.HasSuffix(name, "_test.go") && notests {
+		return false
+	}
+
+	return true
+
 }
